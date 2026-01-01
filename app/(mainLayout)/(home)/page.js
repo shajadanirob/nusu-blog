@@ -1,16 +1,28 @@
-import Banner from "@/Components/Banner/Banner";
-import Brand from "@/Components/Brand/Brand";
+
+import { Banner } from "@/Components/Banner/Banner";
+import { MobileBanner } from "@/Components/Banner/MobileBanner";
+import BestSeller from "@/Components/BestSeller/BestSeller";
 import Category from "@/Components/Category/Category";
-import ProductsCard from "@/Components/ProductsCard/ProductsCard";
+import FeaturedProduct from "@/Components/FeaturedProduct/FeaturedProduct";
+import NewArrival from "@/Components/NewArrival/NewArrival";
+import Footer from "@/Components/Shared/Footer/Footer";
+import MobileNavbar from "@/Components/Shared/MobileNavbar/MobileNavbar";
+import Navbar from "@/Components/Shared/Navbar/Navbar";
 import Image from "next/image";
 
 export default function Home() {
+  
   return (
     <div>
+      <MobileNavbar/>
+      <Navbar/>
+      <MobileBanner/>
       <Banner/>
       <Category/>
-      <ProductsCard/>
-      <Brand/>
+      <FeaturedProduct/>
+      <NewArrival/>
+      <BestSeller/>
+      <Footer/>
     </div>
   );
 }

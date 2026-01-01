@@ -46,10 +46,10 @@ const AuthProvider = ({ children }) => {
     //         // const email = currentUser?.email
     //         // const data = { email }
     //         // if (currentUser) {
-    //         //     axios.post('http://localhost:5000/api/v1/access', data, { withCredentials: true })
+    //         //     axios.post('https://hawkers-accessories-backend.vercel.app/api/v1/access', data, { withCredentials: true })
     //         //         .then(res => console.log(res.data))
     //         // } else {
-    //         //     axios.post('http://localhost:5000/api/v1/logout', data, { withCredentials: true })
+    //         //     axios.post('https://hawkers-accessories-backend.vercel.app/api/v1/logout', data, { withCredentials: true })
     //         //         .then(res => console.log(res.data))
     //         // }
     //     })

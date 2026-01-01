@@ -1,198 +1,138 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-'use client'
+'use client';
 import Image from 'next/image';
-import React from 'react';
-import image from '@/assests/2325-79475.jpg' 
-import ImageTwo from '@/assests/2325-40052.jpg' 
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { toast, Toaster } from 'sonner';
 
-const ProductDetalis = () => {
+const ProductDetail = ({ product }) => {
+  const [quantity, setQuantity] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(parseFloat(product.price) || 0);
 
-    const [currentSlider, setCurrentSlider] = useState(0);
-    const sliders = [{ img: image},{ img: ImageTwo}];
-   
+  // Debugging: Log the product object to ensure it contains the expected properties
+  console.log('Product:', product);
 
+  useEffect(() => {
+    setTotalPrice((parseFloat(product.price) || 0) * quantity);
+  }, [quantity, product.price]);
 
+  const incrementQuantity = () => {
+    if (quantity < parseInt(product.stockQuantity)) {
+      setQuantity(quantity + 1);
+    }
+  };
 
-    return (
-        <div>
-            <div className="bg-white py-6 sm:py-8 lg:py-12">
-      <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-        <div className="grid gap-8 md:grid-cols-2">
+  const decrementQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
 
+  const isOutOfStock = product.stockQuantity === '0';
+  console.log('Is Out of Stock:', isOutOfStock);
 
-          {/* images - start */}
-          <div className="flex flex-row-reverse justify-between">
-            <div className="w-full h-72 sm:h-96 md:h-[540px] flex flex-col items-center justify-center gap-5 lg:gap-10 bg-cover bg-center before:absolute ase-linear rounded-lg overflow-hidden"
-                >
-                {/* text container here */}
-                <div className="drop-shadow-lg text-white text-center px-5">
-                    
-                    <Image src={sliders[currentSlider].img}/>
-                </div>
-            </div>
-            {/* slider container */}
-            <div className="flex flex-col justify-center items-center gap-3 p-2">
-                {/* sliders */}
-                {sliders.map((slide, inx) => (<Image onClick={() => setCurrentSlider(inx)} key={inx}
-                        src={slide.img} className={`w-10 md:w-20 h-6 sm:h-8 md:h-12 bg-black/20 ${currentSlider === inx ? 'border-2 border-black p-px' : ''} rounded-md md:rounded-lg box-content cursor-pointer`}
-                        alt={slide.title}/>
-                ))}
-            </div>
-        </div>
-          {/* images - end */}
+  const addToCart = () => {
+    // Show loading toast
+    const toastId = toast.loading("Adding product to cart...");
 
+    setTimeout(() => {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const existingProductIndex = cart.findIndex((item) => item._id === product._id);
 
+      if (existingProductIndex !== -1) {
+        cart[existingProductIndex].quantity += quantity;
+      } else {
+        cart.push({ ...product, quantity });
+      }
 
+      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      // Update toast to success
+      toast.success("Product added to cart!");
+      toast.dismiss(toastId);
+    }, 1000); // Simulate a delay for loading
+  };
 
-
-
-
-
-          {/* content - start */}
-          <div className="md:py-8">
-            {/* name - start */}
-            <div className="mb-2 md:mb-3">
-              <span className="mb-0.5 inline-block text-gray-500">Fancy Brand</span>
-              <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl">Pullover with pattern</h2>
-            </div>
-            {/* name - end */}
-            {/* rating - start */}
-            <div className="mb-6 flex items-center md:mb-10">
-              <div className="-ml-1 flex gap-0.5">
-                {/* Insert your SVG rating stars here */}
-              </div>
-              <span className="ml-2 text-sm text-gray-500">4.2</span>
-              <a href="#" className="ml-4 text-sm font-semibold text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700">view all 47 reviews</a>
-            </div>
-            {/* rating - end */}
-            {/* color - start */}
-            {/* Insert color selection buttons here */}
-            {/* color - end */}
-            {/* size - start */}
-            {/* Insert size selection buttons here */}
-            {/* size - end */}
-            {/* price - start */}
-            <div className="mb-4">
-              <div className="flex items-end gap-2">
-                <span className="text-xl font-bold text-gray-800 md:text-2xl">$15.00</span>
-                <span className="mb-0.5 text-red-500 line-through">$30.00</span>
-              </div>
-              <div className="mt-7 flex items-center gap-2">
-            <p className="text-sm min-w-[5rem]">Color:</p>
-            <div className="flex items-center flex-wrap gap-2">
-                <div className="bg-white cursor-pointer duration-300 rounded overflow-hidden w-8 h-8 center border border-secondary border-opacity-20">
-                    <div data-tooltip-id="my-tooltip" className="w-6 h-6 rounded bg-card-1" data-tooltip-content="Black Titanium" style={{ backgroundColor: 'rgb(65, 64, 62)' }}></div>
-                </div>
-                <div className="bg-white cursor-pointer duration-300 rounded overflow-hidden w-8 h-8 center border border-secondary border-opacity-20">
-                    <div data-tooltip-id="my-tooltip" className="w-6 h-6 rounded bg-card-1" data-tooltip-content="Blue Titanium" style={{ backgroundColor: 'rgb(71, 75, 82)' }}></div>
-                </div>
-                <div className="bg-white cursor-pointer duration-300 rounded overflow-hidden w-8 h-8 center border border-primary badge-shadow-primary">
-                    <div data-tooltip-id="my-tooltip" className="w-6 h-6 rounded bg-card-1" data-tooltip-content="Natural Titanium" style={{ backgroundColor: 'rgb(153, 150, 145)' }}></div>
-                </div>
-                <div className="bg-white cursor-pointer duration-300 rounded overflow-hidden w-8 h-8 center border border-secondary border-opacity-20">
-                    <div data-tooltip-id="my-tooltip" className="w-6 h-6 rounded bg-card-1" data-tooltip-content="White Titanium" style={{ backgroundColor: 'rgb(229, 228, 222)' }}></div>
-                </div>
-            </div>
+  return (
+    <div className="max-w-screen-2xl mx-auto p-6 my-5">
+      {/* Toast Container */}
+      <Toaster />
+      
+      {/* Product Section */}
+      <div className="flex flex-col lg:flex-row p-6">
+        {/* Left Section: Product Image */}
+        <div className="lg:w-1/2 flex justify-center items-center">
+          <Image
+            width={500}
+            height={500}
+            src={product.imageOne || '/placeholder-image.png'} // Use a placeholder image if the product image is not available
+            alt={product.name || 'Product Image'} // Use a fallback alt text
+            className="object-cover h-64 w-full lg:w-3/4 rounded-md"
+          />
         </div>
 
+        {/* Right Section: Product Details */}
+        <div className="lg:w-1/2 mt-6 lg:mt-0 lg:pl-10">
+          <h2 className="text-2xl font-semibold">{product.name || 'Product Name'}</h2>
+          <p className="text-sm text-gray-500 mt-2">{product.brand || 'Brand'}</p>
+          <p className="mt-2 text-gray-400">{product.description || 'Product Description'}</p>
 
-
-
-        <div className="mt-7 flex items-center gap-2">
-            <p className="text-sm min-w-[5rem]">Region:</p>
-            <div className="flex items-center flex-wrap gap-2">
-                <div className="bg-card-1 py-2 px-3 w-fit duration-300 hover:text-primary !p-0 rounded">
-                    <button className="px-2 md:px-3 py-1 text-xs md:text-sm md:font-SFProDisplaySemibold">HK</button>
-                </div>
-                <div className="bg-card-1 py-2 px-3 w-fit duration-300 !p-0 rounded !bg-primary ">
-                    <button className="px-2 md:px-3 py-1 text-xs md:text-sm md:font-SFProDisplaySemibold">SG / UAE</button>
-                </div>
-            </div>
-        </div>
-
-
-
-
-        <div className="mt-7 flex items-center gap-2">
-            <p className="text-sm min-w-[5rem]">Storage:</p>
-            <div className="flex items-center flex-wrap gap-2">
-                <div className="bg-card-1 py-2 px-3 w-fit duration-300 hover:text-primary !p-0 rounded">
-                    <button className="px-2 md:px-3 py-1 text-xs md:text-sm md:font-SFProDisplaySemibold">1Tb</button>
-                </div>
-                <div className="bg-card-1 py-2 px-3 w-fit duration-300 !p-0 rounded !bg-primary ">
-                    <button className="px-2 md:px-3 py-1 text-xs md:text-sm md:font-SFProDisplaySemibold">256GB</button>
-                </div>
-                <div className="bg-card-1 py-2 px-3 w-fit duration-300 !p-0 rounded !bg-primary ">
-                    <button className="px-2 md:px-3 py-1 text-xs md:text-sm md:font-SFProDisplaySemibold">512GB</button>
-                </div>
-            </div>
-        </div>
-
-
-            
-            </div>
-            
-            {/* price - end */}
-            {/* shipping notice - start */}
-            <div class="mb-6 flex items-center gap-2 text-gray-500">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-          </svg>
-
-          <span class="text-sm">2-4 day shipping</span>
-        </div>
-            {/* shipping notice - end */}
-            {/* buttons - start */}
-
-            
-            <div className="flex gap-2.5">
-            <div class="inline-flex items-center mt-2">
-            <button
-                class="bg-white rounded-l border text-gray-600 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-50 inline-flex items-center px-2 py-1 border-r border-gray-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-4" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-                </svg>
-            </button>
-            <div
-                class="bg-gray-100 border-t border-b border-gray-100 text-gray-600 hover:bg-gray-100 inline-flex items-center px-4 py-1 select-none">
-                2
-            </div>
-            <button
-                class="bg-white rounded-r border text-gray-600 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-50 inline-flex items-center px-2 py-1 border-r border-gray-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-4" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-            </button>
-        </div>
-              <a href="#" className="inline-block flex-1 rounded-lg bg-[#F26E21] px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 sm:flex-none md:text-base">Add to cart</a>
-             
-            </div>
-            {/* buttons - end */}
-            {/* description - start */}
-            {/* <div className="mt-10 md:mt-16 lg:mt-20">
-              <div className="mb-3 text-lg font-semibold text-gray-800">Description</div>
-              <p className="text-gray-500">
-                This is a section of some simple filler text, also known as placeholder text. It shares some characteristics of a real written text but is random or otherwise generated. It may be used to display a sample of fonts or generate text for testing.<br /><br />
-                This is a section of some simple filler text, also known as placeholder text. It shares some characteristics of a real written text but is random or otherwise generated.
-              </p>
-            </div> */}
-            {/* description - end */}
+          {/* Price Section */}
+          <div className="mt-4 flex items-center">
+            <span className="text-2xl font-bold text-red-600">{`৳ ${totalPrice.toFixed(2)}`}</span>
+            {product.originalPrice && (
+              <span className="ml-3 line-through text-gray-500">{`৳ ${product.originalPrice}`}</span>
+            )}
           </div>
-          {/* content - end */}
+
+          {/* Quantity Selector */}
+          <div className="mt-4">
+            <div className="flex items-center">
+              <span className="font-semibold text-gray-700 mr-4">Quantity:</span>
+              <div className="flex">
+                <button
+                  onClick={decrementQuantity}
+                  className="bg-gray-200 px-3 py-1 rounded-l-lg"
+                  disabled={isOutOfStock}
+                >
+                  -
+                </button>
+                <input
+                  type="text"
+                  className="w-12 text-center border-t border-b border-gray-200"
+                  value={quantity}
+                  readOnly
+                />
+                <button
+                  onClick={incrementQuantity}
+                  className="bg-gray-200 px-3 py-1 rounded-r-lg"
+                  disabled={isOutOfStock || quantity >= parseInt(product.stockQuantity)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Add to Cart & Buy Now Buttons */}
+          <div className="mt-6">
+            <button
+              className={`bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 mr-4 ${isOutOfStock ? 'cursor-not-allowed opacity-50' : ''}`}
+              disabled={isOutOfStock}
+              onClick={addToCart}
+            >
+              Add to cart
+            </button>
+            
+          </div>
+
+          {/* Brand & Stock Info */}
+          <div className="mt-4 text-gray-500">
+            <p>Brand: <span className="text-black">{product.brand || 'Believers Sign'}</span></p>
+            <p>Status: <span className={isOutOfStock ? 'text-red-600' : 'text-green-600'}>{isOutOfStock ? 'Out of Stock' : 'In Stock'}</span></p>
+          </div>
         </div>
       </div>
     </div>
-
-
-
-
-
-        </div>
-    );
+  );
 };
 
-export default ProductDetalis;
+export default ProductDetail;
